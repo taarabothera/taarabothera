@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Habit Tracker App</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2f7;--surface:#fff;--ink:#1b2433;--muted:#5d6b82;--line:#d9e0ea;--empty:#e7ecf3;--btn:#1b2433;--btnT:#fff;--acc:#2f80ed;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1520;--surface:#182130;--ink:#eaf0f8;--muted:#9aa8bf;--line:#2a3649;--empty:#222d3f;--btn:#eaf0f8;--btnT:#0f1520;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1520;--surface:#182130;--ink:#eaf0f8;--muted:#9aa8bf;--line:#2a3649;--empty:#222d3f;--btn:#eaf0f8;--btnT:#0f1520;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}
+button,input{font:inherit;color:inherit}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--surface)}
+.brand{font-weight:800;font-size:1.15rem;letter-spacing:-.01em;margin-right:auto}
+.top button{border:1px solid var(--line);background:none;border-radius:10px;padding:7px 13px;cursor:pointer;min-height:38px}
+.top button.on{background:var(--btn);color:var(--btnT);border-color:var(--btn)}
+.who{color:var(--muted);font-size:.9rem}
+main{max-width:1100px;margin:0 auto;padding:22px 16px 56px}
+h1{margin:0;font-size:clamp(1.9rem,6vw,3.1rem);font-weight:800;letter-spacing:-.025em;line-height:1.05}
+h2{margin:0 0 10px;font-size:1.3rem}
+.muted{color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px}
+.btn{border:0;background:var(--btn);color:var(--btnT);font-weight:600;border-radius:12px;padding:12px 22px;cursor:pointer;min-height:46px}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.auth{max-width:420px;margin:24px auto}
+.tabs{display:flex;gap:6px;margin-bottom:16px;background:var(--empty);padding:4px;border-radius:12px}
+.tabs button{flex:1;border:0;background:none;padding:9px;border-radius:9px;cursor:pointer;font-weight:600}
+.tabs button.on{background:var(--surface)}
+label{display:block;margin:12px 0 4px;font-size:.9rem;font-weight:600}
+input{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:var(--bg);min-height:44px}
+.err{color:#d6455d;min-height:1.3em;margin:10px 0 0;font-size:.92rem}
+.hero{padding:28px 0 18px}
+.hero p{max-width:52ch;font-size:1.1rem;margin:12px 0 22px}
+.steps{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin:10px 0 26px}
+.steps b{display:block;font-size:1.05rem;margin-bottom:4px}
+.n{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--acc);color:#fff;font-weight:800;margin-bottom:8px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.bar .sp{margin-left:auto}
+.add{display:none;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.add.open{display:flex}
+.add input{flex:1 1 240px}
+.sub{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.sub button{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:8px 18px;cursor:pointer;min-height:40px;font-weight:600}
+.sub button.on{background:var(--btn);color:var(--btnT);border-color:var(--btn)}
+.nav{display:flex;align-items:center;gap:8px}
+.nav button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 14px;cursor:pointer;min-height:40px}
+.nav span{min-width:9ch;text-align:center;font-weight:600}
+.wrap{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow-x:auto;max-width:100%}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:max-content}
+th,td{padding:5px 3px;text-align:center;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th{font-size:.8rem;color:var(--muted);font-weight:600;padding-top:10px}
+th.t span{display:inline-block;min-width:22px;border-radius:6px;background:var(--btn);color:var(--btnT)}
+.nm{position:sticky;left:0;z-index:2;background:var(--surface);text-align:left!important;padding:6px 10px 6px 14px;min-width:150px;max-width:190px;border-right:1px solid var(--line);font-weight:600}
+.row{display:flex;align-items:center;gap:8px}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.del{margin-left:auto;border:0;background:none;color:var(--muted);cursor:pointer;font-size:1.1rem;border-radius:6px;padding:0 6px}
+.cell{width:28px;height:28px;border-radius:8px;border:0;background:var(--empty);cursor:pointer;display:block;margin:0 auto;color:#fff;font-weight:800;line-height:1}
+.cell[aria-pressed="true"]{background:var(--c)}
+.cell[aria-pressed="true"]::after{content:"✓"}
+.cell:disabled{opacity:.4;cursor:default}
+.stat{padding:6px 14px;text-align:right;white-space:nowrap;font-size:.9rem;border-left:1px solid var(--line)}
+.stat small{display:block;color:var(--muted)}
+.heat{min-width:64px;height:38px;border-radius:8px;display:grid;place-items:center;font-weight:600;font-size:.85rem;background:color-mix(in srgb,var(--c) var(--p),var(--empty));color:var(--ink);margin:0 2px}
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.big{font-size:2.4rem;font-weight:800;line-height:1;letter-spacing:-.03em}
+.empty{padding:34px 20px;text-align:center}
+.sum{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;margin-bottom:14px}
+.pb{flex:1 1 200px;height:12px;background:var(--empty);border-radius:99px;overflow:hidden}
+.pb i{display:block;height:100%;background:var(--acc);border-radius:99px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="top" id="top"></div>
+<main id="app"></main>
+<script>
+(function(){
+var COL=["#2f80ed","#8e5bd6","#e8884a","#1fa67a","#16a5c7","#d9577d","#c9a227","#6b8e23"];
+var MON=["January","February","March","April","May","June","July","August","September","October","November","December"];
+var now=new Date(),TY=now.getFullYear(),TM=now.getMonth(),TD=now.getDate();
+var U,D,page="auth",tab="month",mode="login",err="",vy=TY,vm=TM,adding=false;
+function ld(k,f){try{var r=localStorage.getItem(k);return r?JSON.parse(r):f}catch(e){return f}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function $(i){return document.getElementById(i)}
+var users=ld("ht-users",{});
+function hash(s){
+  if(window.crypto&&crypto.subtle){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")})}
+  return Promise.resolve(btoa(unescape(encodeURIComponent(s))));
+}
+function login(email){U=email;D=ld("ht-data-"+email,{habits:[],done:{}});sv("ht-session",email);page="home";render()}
+function saveD(){sv("ht-data-"+U,D)}
+function dim(y,m){return new Date(y,m+1,0).getDate()}
+function get(id,y,m){var o=D.done[y+"-"+m];return(o&&o[id])||[]}
+function lastDay(y,m){if(y>TY||(y===TY&&m>TM))return 0;if(y===TY&&m===TM)return TD;return dim(y,m)}
+function dn(y,m,d){return Math.floor(Date.UTC(y,m,d)/864e5)}
+function allDays(id){
+  var s=[];Object.keys(D.done).forEach(function(k){var p=k.split("-"),a=(D.done[k]||{})[id]||[];a.forEach(function(d){s.push(dn(+p[0],+p[1],d))})});
+  return s.sort(function(a,b){return a-b});
+}
+function streaks(id){
+  var a=allDays(id),set={},best=0,run=0,prev=null;
+  a.forEach(function(x){set[x]=1;run=(prev!==null&&x===prev+1)?run+1:1;if(run>best)best=run;prev=x});
+  var t=dn(TY,TM,TD),c=0,x=set[t]?t:t-1;
+  while(set[x]){c++;x--}
+  return{cur:c,best:best,total:a.length};
+}
+function topbar(){
+  var h='<span class="brand">Habit tracker</span>';
+  if(U){h+='<button data-go="home" class="'+(page==="home"?"on":"")+'">Home</button><button data-go="track" class="'+(page==="track"?"on":"")+'">My habits</button><span class="who">'+esc((users[U]&&users[U].name)||U)+'</span><button data-act="out">Log out</button>'}
+  $("top").innerHTML=h;
+}
+function vAuth(){
+  var su=mode==="signup";
+  return '<div class="auth card"><h2>'+(su?"Create your account":"Welcome back")+'</h2><p class="muted" style="margin:0 0 14px">'+(su?"Sign up with your Gmail or any email address.":"Log in to see your habits.")+'</p>'+
+  '<div class="tabs"><button data-mode="login" class="'+(su?"":"on")+'">Log in</button><button data-mode="signup" class="'+(su?"on":"")+'">Create account</button></div>'+
+  (su?'<label for="nm">Your name</label><input id="nm" autocomplete="name" maxlength="40">':'')+
+  '<label for="em">Email</label><input id="em" type="email" autocomplete="email" placeholder="you@gmail.com">'+
+  '<label for="pw">Password</label><input id="pw" type="password" autocomplete="'+(su?"new-password":"current-password")+'" placeholder="At least 6 characters">'+
+  '<p class="err" id="err" role="alert">'+esc(err)+'</p><button class="btn" style="width:100%;margin-top:8px" data-act="auth">'+(su?"Create account":"Log in")+'</button>'+
+  '<p class="muted" style="font-size:.85rem;margin:14px 0 0">Accounts and habits are saved in this browser on this device only.</p></div>';
+}
+function vHome(){
+  var nm=esc((users[U]&&users[U].name)||"there");
+  return '<section class="hero"><h1>Hi '+nm+', let’s build habits that stick.</h1><p class="muted">Pick the things you want to do every day. Tick them off, and the app shows your progress by month and by year, plus your streaks.</p></section>'+
+  '<div class="steps"><div class="card"><span class="n">1</span><b>Add your habits</b><span class="muted">Type anything you want to do daily, like reading or drinking water.</span></div>'+
+  '<div class="card"><span class="n">2</span><b>Tick them every day</b><span class="muted">Open the monthly table and mark what you finished today.</span></div>'+
+  '<div class="card"><span class="n">3</span><b>Watch your progress</b><span class="muted">See the yearly view and your current and best streaks.</span></div></div>'+
+  '<button class="btn" data-go="track">Start tracking habits</button>';
+}
+function vTrack(){
+  var h='<div class="bar"><h2 style="margin:0">My habits</h2><button class="btn sp" data-act="toggleAdd">+ Add habit</button></div>'+
+  '<div class="add'+(adding?" open":"")+'" id="addbox"><input id="hn" maxlength="30" placeholder="Type a habit, for example: Stretch" aria-label="Habit name"><button class="btn" data-act="addHabit">Save habit</button></div>';
+  if(!D.habits.length)return h+'<div class="card empty"><h2>No habits yet</h2><p class="muted">Choose Add habit and type your first one. It will appear in your table.</p></div>';
+  h+='<div class="sub"><button data-tab="month" class="'+(tab==="month"?"on":"")+'">Monthly</button><button data-tab="year" class="'+(tab==="year"?"on":"")+'">Yearly</button><button data-tab="streak" class="'+(tab==="streak"?"on":"")+'">Streaks</button></div>';
+  return h+(tab==="month"?tMonth():tab==="year"?tYear():tStreak());
+}
+function tMonth(){
+  var n=dim(vy,vm),last=lastDay(vy,vm),tot=0;
+  var t='<table><thead><tr><th class="nm">Habit</th>';
+  for(var d=1;d<=n;d++)t+='<th class="'+((vy===TY&&vm===TM&&d===TD)?"t":"")+'"><span>'+d+'</span></th>';
+  t+='<th class="stat">This month</th></tr></thead><tbody>';
+  D.habits.forEach(function(hb){
+    var a=get(hb.id,vy,vm).filter(function(d){return d<=n}),s={};a.forEach(function(d){s[d]=1});tot+=a.length;
+    t+='<tr><td class="nm"><div class="row"><span class="dot" style="background:'+hb.color+'"></span><span>'+esc(hb.name)+'</span><button class="del" data-del="'+hb.id+'" aria-label="Remove '+esc(hb.name)+'">×</button></div></td>';
+    for(var d=1;d<=n;d++)t+='<td><button class="cell" style="--c:'+hb.color+'" data-h="'+hb.id+'" data-d="'+d+'" aria-pressed="'+!!s[d]+'" aria-label="'+esc(hb.name)+' '+MON[vm]+' '+d+'"'+(d>last?" disabled":"")+'></button></td>';
+    t+='<td class="stat"><b>'+a.length+'</b>/'+(last||n)+' days</td></tr>';
+  });
+  t+='</tbody></table>';
+  var poss=D.habits.length*last,p=poss?Math.round(tot/poss*100):0;
+  return '<div class="sum"><div class="nav"><button data-m="-1" aria-label="Previous month">‹</button><span>'+MON[vm]+' '+vy+'</span><button data-m="1" aria-label="Next month">›</button><button data-m="0">Today</button></div><div><b style="font-size:1.6rem">'+p+'%</b> <span class="muted">done so far</span></div><div class="pb"><i style="width:'+p+'%"></i></div></div><div class="wrap">'+t+'</div><p class="muted" style="font-size:.9rem">Tap a box to tick or untick it. Future days are locked.</p>';
+}
+function tYear(){
+  var t='<table><thead><tr><th class="nm">Habit</th>';
+  MON.forEach(function(m){t+='<th>'+m.slice(0,3)+'</th>'});
+  t+='<th class="stat">Year total</th></tr></thead><tbody>';
+  D.habits.forEach(function(hb){
+    var tot=0;
+    t+='<tr><td class="nm"><div class="row"><span class="dot" style="background:'+hb.color+'"></span><span>'+esc(hb.name)+'</span></div></td>';
+    for(var m=0;m<12;m++){var c=get(hb.id,vy,m).length,n=dim(vy,m);tot+=c;t+='<td><div class="heat" style="--c:'+hb.color+';--p:'+Math.round(c/n*100)+'%" title="'+c+' of '+n+' days">'+c+'/'+n+'</div></td>'}
+    t+='<td class="stat"><b>'+tot+'</b> days</td></tr>';
+  });
+  t+='</tbody></table>';
+  return '<div class="sum"><div class="nav"><button data-y="-1" aria-label="Previous year">‹</button><span>'+vy+'</span><button data-y="1" aria-label="Next year">›</button><button data-y="0">This year</button></div></div><div class="wrap">'+t+'</div><p class="muted" style="font-size:.9rem">Each box shows days completed out of days in that month. A darker colour means a better month.</p>';
+}
+function tStreak(){
+  var h='<div class="kpis">';
+  D.habits.forEach(function(hb){
+    var s=streaks(hb.id);
+    h+='<div class="card"><div class="row" style="margin-bottom:12px"><span class="dot" style="background:'+hb.color+'"></span><b>'+esc(hb.name)+'</b></div><div class="big">'+s.cur+'<span class="muted" style="font-size:1rem;font-weight:600"> day'+(s.cur===1?"":"s")+' in a row</span></div><p class="muted" style="margin:10px 0 0">Best streak: <b style="color:var(--ink)">'+s.best+'</b> · Total days done: <b style="color:var(--ink)">'+s.total+'</b></p></div>';
+  });
+  return h+'</div><p class="muted" style="font-size:.9rem">A current streak counts back from today. If you haven’t ticked today yet, it counts back from yesterday.</p>';
+}
+function render(){
+  topbar();
+  var a=$("app");
+  if(page==="auth"||!U)a.innerHTML=vAuth();
+  else if(page==="home")a.innerHTML=vHome();
+  else a.innerHTML=vTrack();
+  if(adding&&page==="track"){var i=$("hn");if(i)i.focus()}
+}
+function doAuth(){
+  var em=($("em").value||"").trim().toLowerCase(),pw=$("pw").value||"",nm=$("nm")?$("nm").value.trim():"";
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){err="Enter a valid email address.";return render()}
+  if(pw.length<6){err="Password must be at least 6 characters.";return render()}
+  hash(em+":"+pw).then(function(h){
+    if(mode==="signup"){
+      if(users[em]){err="That email already has an account. Log in instead.";return render()}
+      if(!nm){err="Enter your name.";return render()}
+      users[em]={name:nm,h:h};sv("ht-users",users);err="";login(em);
+    }else{
+      if(!users[em]||users[em].h!==h){err="Email or password is incorrect.";return render()}
+      err="";login(em);
+    }
+  });
+}
+function addHabit(){
+  var i=$("hn"),n=(i.value||"").trim();if(!n){i.focus();return}
+  D.habits.push({id:"h"+Date.now(),name:n,color:COL[D.habits.length%COL.length]});
+  saveD();adding=false;render();
+}
+document.addEventListener("click",function(e){
+  var t=e.target.closest("button");if(!t)return;var ds=t.dataset;
+  if(ds.mode){mode=ds.mode;err="";return render()}
+  if(ds.act==="auth")return doAuth();
+  if(ds.act==="out"){U=null;D=null;sv("ht-session",null);page="auth";mode="login";return render()}
+  if(ds.go){page=ds.go;return render()}
+  if(ds.act==="toggleAdd"){adding=!adding;return render()}
+  if(ds.act==="addHabit")return addHabit();
+  if(ds.tab){tab=ds.tab;return render()}
+  if(ds.m!==undefined){var x=+ds.m;if(x===0){vy=TY;vm=TM}else{vm+=x;if(vm<0){vm=11;vy--}if(vm>11){vm=0;vy++}}return render()}
+  if(ds.y!==undefined){var y=+ds.y;vy=y===0?TY:vy+y;return render()}
+  if(ds.del){var hb=D.habits.filter(function(z){return z.id===ds.del})[0];
+    if(hb&&confirm("Remove “"+hb.name+"” and all its ticks?")){D.habits=D.habits.filter(function(z){return z.id!==hb.id});Object.keys(D.done).forEach(function(k){delete D.done[k][hb.id]});saveD();render()}return}
+  if(ds.h){var k=vy+"-"+vm,d=+ds.d;D.done[k]=D.done[k]||{};var a=D.done[k][ds.h]||[],i=a.indexOf(d);if(i>-1)a.splice(i,1);else a.push(d);D.done[k][ds.h]=a;saveD();render()}
+});
+document.addEventListener("keydown",function(e){
+  if(e.key!=="Enter")return;
+  if(e.target.id==="hn")addHabit();
+  else if(e.target.id==="em"||e.target.id==="pw"||e.target.id==="nm")doAuth();
+});
+var s=ld("ht-session",null);
+if(s&&users[s])login(s);else render();
+})();
+</script>
+</body>
+</html>
